@@ -1,0 +1,216 @@
+/* Content */
+#app-content-main {
+	display: block;
+}
+
+#app-content-search {
+	display: none;
+}
+
+/* List */
+
+.list-header {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+	background-color: #eee;
+}
+
+.list-header > div {
+	padding: 16px 0;
+	vertical-align: middle;
+}
+
+.list-header > div:nth-child(1) {
+	padding-left: 20px;
+	font-size: 20px;
+}
+
+.list-header > div:nth-child(2) {
+	text-align: right;
+	font-size: 15px;
+	color: #666;
+}
+
+.list-header > div:nth-child(3) {
+	text-align: right;
+	padding-right: 20px;
+	font-size: 15px;
+	width: 100px;
+}
+
+
+.list-header > div {
+	display: table-cell;
+}
+
+.list {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+}
+
+.list .row {
+	display: table-row;
+	transition: background-color .1s ease;
+}
+
+.list .row:nth-child(even) {
+	background-color: #eee;
+}
+
+.list .row div {
+	cursor: pointer;
+}
+.list .row:hover {
+	background-color: #ddd;
+}
+
+.list .row > div {
+	display: table-cell;
+	padding: 16px 0;
+	vertical-align: middle;
+}
+
+.list .row > div:nth-child(1) {
+	width: 80px;
+	text-align: center;
+}
+
+.list .row > div:nth-child(3) {
+	width: 100px;
+	text-align: right;
+	padding-right: 20px;
+	font-size: 15px;
+}
+
+.list .row > div .t {
+	font-size: 18px;
+	color: #333;
+}
+
+.list .row > div .c,
+.list .row > div .d {
+	font-size: 13px;
+	color: #666;
+}
+
+
+
+.list .row > div.o,
+.list-header > div.o {
+	color: red;
+}
+.list .row > div.i,
+.list-header > div.i {
+	color: green;
+}
+
+.list .row div .l {
+	background-color: #5AB95F;
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	border-radius: 40px;
+	color: #fff;
+	font-size: 21px;
+}
+
+/* Navigation */
+
+#app-navigation .datepicker-heading, #app-navigation .togglebuttons {
+	display: flex;
+	margin: 0 5px;
+	width: calc(100% - 10px);
+}
+#app-navigation .datepicker-heading .button.first, #app-navigation .datepicker-heading .button.last {
+	width: 35px;
+}
+#app-navigation .datepicker-heading .button {
+	border-color: transparent;
+	background: transparent;
+}
+#app-navigation .datepicker-heading .button.middle {
+	width: calc(100% - 70px);
+}
+
+#app-navigation .button.today {
+	width: 100%;
+}
+
+#app-navigation ul li {
+	background-size: 16px 16px;
+	background-position: 14px center;
+	background-repeat: no-repeat;
+}
+
+#app-navigation .nav-icon-add {
+	background-image: url('../img/add.svg');
+}
+
+#app-navigation .nav-icon-view {
+	background-image: url('../img/view.svg');
+}
+
+/* Navigation right */
+#app-navigation-right {
+	display: none;
+	overflow-y: auto;
+  width: 250px;
+  height: 100%;
+  float: right;
+  box-sizing: border-box;
+  background-color: #fff;
+  padding-bottom: 44px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border-left: 1px solid #ebebeb;
+  flex-direction: column;
+	padding: 0 5px;
+}
+
+/* Search */
+
+.searchcontainer {
+	display: flex;
+	margin: 0 5px;
+	width: calc(100% - 10px);
+}
+
+.searchcontainer input {
+	width: 100%;
+}
+
+/* Form */
+
+#effectcash-form label,
+#effectcash-settings-form label {
+	display: block;
+	width: 100%;
+}
+#effectcash-form input,
+#effectcash-settings-form input,
+#effectcash-form select,
+#effectcash-settings-form select,
+#effectcash-form textarea,
+#effectcash-settings-form textarea,
+#effectcash-form button,
+#effectcash-settings-form button {
+	width: 100%;
+}
+
+/* Glyphicon */
+.glyphicon {
+    display: block;
+    height: 15px;
+}
+.glyphicon-chevron-left {
+    background: url('../img/leftarrow.svg') center center no-repeat;
+}
+.glyphicon-chevron-right {
+    background: url('../img/rightarrow.svg') center center no-repeat;
+}
