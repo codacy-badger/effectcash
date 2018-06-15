@@ -3,7 +3,7 @@
   namespace OCA\EffectCash\AppInfo;
 
   require_once __DIR__ . '/autoload.php';
-
+/*
   \OC::$server->getNavigationManager()->add(function () {
       $urlGenerator = \OC::$server->getURLGenerator();
       return [
@@ -14,3 +14,4 @@
           'name' => \OC::$server->getL10N('effectcash')->t('EffectCash'),
       ];
   });
+*/

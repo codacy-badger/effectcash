@@ -6,6 +6,7 @@ use OC\AppFramework\Utility\SimpleContainer;
 use \OCP\AppFramework\App;
 use \OCA\EffectCash\Db\BudgetMapper;
 use \OCA\EffectCash\Controller\PageController;
+use \OCA\EffectCash\Controller\BudgetController;
 use \OCA\EffectCash\Service\ConfigService;
 
 class Application extends App {
@@ -22,6 +23,18 @@ class Application extends App {
 		$container->registerService('PageController', function($c) {
 			/** @var SimpleContainer $c */
 			return new PageController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('UserId'),
+				$c->query('BudgetMapper'),
+        $c->query('L10N'),
+				$c->query('ConfigService')
+			);
+		});
+
+		$container->registerService('BudgetController', function($c) {
+			/** @var SimpleContainer $c */
+			return new BudgetController(
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('UserId'),

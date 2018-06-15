@@ -27,6 +27,7 @@ OC.L10N.register(
     "Cancel": "Abbrechen",
     "Pets": "Haustiere",
     "Spare time": "Freizeit",
+    "Car": "Auto",
     "Clothing": "Kleidung",
     "Live": "Wohnen",
     "Insurance": "Versicherung",
@@ -51,6 +52,8 @@ OC.L10N.register(
     "September": "September",
     "October": "Oktober",
     "November": "November",
-    "December": "Dezember"
+    "December": "Dezember",
+    "Date format": "Datumsformat",
+    "Currency format": "Währungsformat"
   }
 )

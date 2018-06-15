@@ -1,9 +1,11 @@
 <?php
+script('effectcash', 'effectlist');
 script('effectcash', 'Chart.bundle.min');
 script('effectcash', 'Chart.min');
 script('effectcash', 'selectize.min');
-script('effectcash', 'rrule');
 script('effectcash', 'script');
+script('effectcash', 'start');
+style('effectcash', 'effectlist');
 style('effectcash', 'selectize');
 style('effectcash', 'style');
 ?>

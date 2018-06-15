@@ -2,15 +2,15 @@
 <info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>effectcash</id>
-    <name>Effect Cash</name>
+    <name>EffectCash</name>
     <summary>PLACEHOLDER</summary>
     <description><![CDATA[PLACEHOLDER]]></description>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <licence>agpl</licence>
     <author mail="vogt.joo@googlemail.com" >Johannes Vogt</author>
     <namespace>EffectCash</namespace>
     <category>organization</category>
-    <bugs>http://www.placeholder.com</bugs>
+    <bugs>https://github.com/effectpet/effectcash/issues</bugs>
 
     <dependencies>
         <nextcloud min-version="13" max-version="13"/>

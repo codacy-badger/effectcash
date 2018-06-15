@@ -26,6 +26,7 @@
     "Cancel": "Abbrechen",
     "Pets": "Haustiere",
     "Spare time": "Freizeit",
+    "Car": "Auto",
     "Clothing": "Kleidung",
     "Live": "Wohnen",
     "Insurance": "Versicherung",
@@ -50,6 +51,8 @@
     "September": "September",
     "October": "Oktober",
     "November": "November",
-    "December": "Dezember"
+    "December": "Dezember",
+    "Date format": "Datumsformat",
+    "Currency format": "Währungsformat"
   }
 }

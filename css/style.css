@@ -9,6 +9,51 @@
 
 /* List */
 
+.efli-list .efli-row .efli-cell.group-title {
+	width: 80px;
+	text-align: center;
+}
+
+.efli-list .efli-row .efli-cell.group-title .group-char {
+	background-color: #5AB95F;
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	border-radius: 40px;
+	color: #fff;
+	font-size: 21px;
+}
+
+.efli-list .efli-row .efli-cell.title div:nth-child(1) {
+	font-size: 18px;
+	color: #333;
+}
+
+.efli-list .efli-row .efli-cell.title div:nth-child(2),
+.efli-list .efli-row .efli-cell.title div:nth-child(3) {
+	font-size: 13px;
+	color: #666;
+}
+
+.efli-list .efli-row .efli-cell.amount {
+	text-align: right;
+	width: 160px;
+	padding-right: 30px;
+	font-size: 17px;
+}
+
+.efli-list .efli-row .efli-cell.amount .positive,
+#effectcash-sum.positive {
+	color: green;
+}
+
+.efli-list .efli-row .efli-cell.amount .negative,
+#effectcash-sum.negative {
+	color: red;
+}
+
 .list-header {
 	display: table;
 	table-layout: fixed;
@@ -34,88 +79,13 @@
 
 .list-header > div:nth-child(3) {
 	text-align: right;
-	padding-right: 20px;
-	font-size: 15px;
-	width: 100px;
+	padding-right: 30px;
+	font-size: 17px;
+	width: 160px;
 }
-
 
 .list-header > div {
 	display: table-cell;
-}
-
-.list {
-	display: table;
-	table-layout: fixed;
-	width: 100%;
-}
-
-.list .row {
-	display: table-row;
-	transition: background-color .1s ease;
-}
-
-.list .row:nth-child(even) {
-	background-color: #eee;
-}
-
-.list .row div {
-	cursor: pointer;
-}
-.list .row:hover {
-	background-color: #ddd;
-}
-
-.list .row > div {
-	display: table-cell;
-	padding: 16px 0;
-	vertical-align: middle;
-}
-
-.list .row > div:nth-child(1) {
-	width: 80px;
-	text-align: center;
-}
-
-.list .row > div:nth-child(3) {
-	width: 100px;
-	text-align: right;
-	padding-right: 20px;
-	font-size: 15px;
-}
-
-.list .row > div .t {
-	font-size: 18px;
-	color: #333;
-}
-
-.list .row > div .c,
-.list .row > div .d {
-	font-size: 13px;
-	color: #666;
-}
-
-
-
-.list .row > div.o,
-.list-header > div.o {
-	color: red;
-}
-.list .row > div.i,
-.list-header > div.i {
-	color: green;
-}
-
-.list .row div .l {
-	background-color: #5AB95F;
-	display: inline-block;
-	width: 40px;
-	height: 40px;
-	line-height: 40px;
-	text-align: center;
-	border-radius: 40px;
-	color: #fff;
-	font-size: 21px;
 }
 
 /* Navigation */
@@ -187,19 +157,14 @@
 
 /* Form */
 
-#effectcash-form label,
-#effectcash-settings-form label {
+.input-frm label {
 	display: block;
 	width: 100%;
 }
-#effectcash-form input,
-#effectcash-settings-form input,
-#effectcash-form select,
-#effectcash-settings-form select,
-#effectcash-form textarea,
-#effectcash-settings-form textarea,
-#effectcash-form button,
-#effectcash-settings-form button {
+.input-frm input,
+.input-frm select,
+.input-frm textarea,
+.input-frm button {
 	width: 100%;
 }
 

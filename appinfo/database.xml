@@ -47,7 +47,7 @@
       <length>1</length>
     </field>
     <field>
-      <name>date</name>
+      <name>budget_date</name>
       <type>timestamp</type>
       <notnull>true</notnull>
     </field>

@@ -1,103 +1,205 @@
-function BudgetNew() {
-  $.get(OC.generateUrl('apps/effectcash/budget_new'), {}, function(budget) {
-    FormRender(budget);
-  });
+// #################################
+// Prototypes
+// #################################
+
+Number.prototype.formatMoney = function(places, symbol, symbol_ahead, thousand, decimal) {
+	places = !isNaN(places = Math.abs(places)) ? places : 2;
+	symbol = symbol !== undefined ? symbol : "$";
+	thousand = thousand || ",";
+	decimal = decimal || ".";
+	var number = this,
+	    negative = number < 0 ? "-" : "",
+	    i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+	    j = (j = i.length) > 3 ? j % 3 : 0;
+	return (symbol_ahead ? symbol + ' ' : '') + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "") + (symbol_ahead ? '' : ' ' + symbol);
+};
+
+// #################################
+// BudgetList Formatter
+// #################################
+
+function BudgetGroupTitleFormatter(value, row) {
+  return `<div class="group-char">` + value.charAt(0) + `</div>`;
 }
 
-function BudgetEdit(id) {
-  $.get(OC.generateUrl('apps/effectcash/budget_edit'), { id:id }, function(budget) {
-    FormRender(budget);
-  });
+function BudgetTitleFormatter(value, row) {
+  var date_formated = moment(row.budget_date).format(settings.getOptions('dateformat').moment);
+  return `
+    <div>` + row.title + `</div>
+    <div>` + row.group_title + `</div>
+    <div>` + date_formated + `</div>`;
 }
 
-function BudgetDateFormat(date) {
-  return moment(date).format($('#app-settings-dateformat-moment').val());
+function BudgetAmountFormatter(value, row) {
+	var c = settings.getOptions('currency');
+  value = value.formatMoney(c.places, c.symbol, c.symbol_ahead, c.thousand, c.decimal);
+  if(row.is_income === "1") {
+    return '<div class="positive">' + value + '</div>';
+  }
+  return '<div class="negative">' + value + '</div>';
 }
 
-function FormRender(budget) {
-  var effectform = $('#effectcash-form');
+// #################################
+// Init BudgetList
+// #################################
 
-  effectform.find("[name='id']").val(budget.id);
-  effectform.find("[name='title']").val(budget.title);
-  effectform.find("[name='group_title']").val(budget.group_title);
-  effectform.find("[name='group_title']")[0].selectize.setValue(budget.group_title);
-  effectform.find("[name='repeat']").val(budget.repeat);
-  effectform.find("[name='is_income']").val(budget.is_income);
-  effectform.find("[name='date']").val(BudgetDateFormat(budget.date));
-  effectform.find("[name='amount']").val(budget.amount);
-  effectform.find("[name='description']").val(budget.description);
-
-  $('#app-navigation-right').show();
-  effectform.find("[name='title']").focus();
-}
-
-function FormSubmit() {
-  var data = $('#effectcash-form :input').serialize();
-
-  $.ajax({
-    type: "POST",
-    url: OC.generateUrl('apps/effectcash/budget_submit'),
-    data: data,
-    success: function() {
-      $('#app-navigation-right').hide();
-      effectcash.load_budgets();
+var budget_list = $('#budget-list').effectlist({
+  url: OC.generateUrl('apps/effectcash/budgets/between'),
+	sortBy: 'budget_date',
+  cells: [
+    { key:'group_title', cls:'group-title', formatter:BudgetGroupTitleFormatter },
+    { key:'title', cls:'title', formatter:BudgetTitleFormatter },
+    { key:'amount', cls:'amount', formatter:BudgetAmountFormatter }
+  ],
+  onReceive: function(rows) {
+    var sum = 0.0;
+    for(i=0; i<rows.length; i++) {
+      if(rows[i].is_income === "1") {
+        sum += rows[i].amount;
+      } else {
+        sum -= rows[i].amount;
+      }
     }
-  });
-}
 
-var effectcash = {
+		var c = settings.getOptions('currency');
+	  var sum_nice = sum.formatMoney(c.places, c.symbol, c.symbol_ahead, c.thousand, c.decimal);
+    $('#effectcash-sum').html(sum_nice).removeClass('negative').removeClass('positive').addClass((sum > 0 ? 'positive' : 'negative'));
+  },
+  onClick: function(el, row) {
+    budget.edit(row.id);
+  }
+});
+
+// #################################
+// Init BudgetSearchList
+// #################################
+
+var budget_search_list = $('#budget-search-list').effectlist({
+  url: OC.generateUrl('apps/effectcash/budgets/search'),
+	sortBy: 'budget_date',
+  cells: [
+    { key:'group_title', cls:'group-title', formatter:BudgetGroupTitleFormatter },
+    { key:'title', cls:'title', formatter:BudgetTitleFormatter },
+    { key:'amount', cls:'amount', formatter:BudgetAmountFormatter }
+  ],
+  onReceive: function(rows) {
+    $('#app-content-search').css('opacity', '1');
+  },
+  onClick: function(el, row) {
+    budget.edit(row.id);
+  }
+});
+
+// #################################
+// Budget
+// #################################
+
+var budget = {
+  new: function() {
+    $.get(OC.generateUrl('apps/effectcash/budgets/new'), {}, function(bget) {
+      budget.form_render(bget, true);
+    });
+  },
+  edit: function(id) {
+    $.get(OC.generateUrl('apps/effectcash/budgets/'+id), {}, function(bget) {
+      budget.form_render(bget, false);
+    });
+  },
+  form_render: function(bget, is_new) {
+    var form = $('#budgetFrm');
+
+    var budget_date_preview = moment(bget.budget_date).format(settings.getOptions('dateformat').moment);
+
+    // Insert to fields
+    form.find("[name='title']").val(bget.title);
+    form.find("[name='group_title']").val(bget.group_title);
+    form.find("[name='group_title']")[0].selectize.setValue(bget.group_title);
+    form.find("[name='repeat']").val(bget.repeat);
+    form.find("[name='is_income']").val(bget.is_income);
+    form.find('#budget-form-budget-date-preview').val(budget_date_preview);
+    form.find("[name='budget_date']").val(bget.budget_date);
+    form.find("[name='amount']").val(bget.amount);
+    form.find("[name='description']").val(bget.description);
+
+    // Set buttons
+    $('#effectcash-bttn-submit').off('click').on('click', function() {
+      if(is_new) {
+        budget.create();
+      } else {
+        budget.update(bget.id);
+      }
+    });
+    $('#effectcash-bttn-cancel').off('click').on('click', function() {
+      $('#app-navigation-right').hide();
+    });
+    // Show form and select first field
+    $('#app-navigation-right').show();
+    form.find("[name='title']").focus();
+  },
+  create: function() {
+    $.ajax({
+      type: "POST",
+      url: OC.generateUrl('apps/effectcash/budgets'),
+      data: $('#budgetFrm :input').serialize(),
+      success: function() {
+        $('#app-navigation-right').hide();
+        budget_list.load(datehandler.list_params());
+      }
+    });
+  },
+  update: function(id) {
+    $.ajax({
+      type: "PUT",
+      url: OC.generateUrl('apps/effectcash/budgets/'+id),
+      data: $('#budgetFrm :input').serialize(),
+      success: function() {
+        $('#app-navigation-right').hide();
+        budget_list.load(datehandler.list_params());
+      }
+    });
+  }
+};
+
+// #################################
+// Datehandler
+// #################################
+
+var datehandler = {
   date: null,
   init: function() {
-    effectcash.today();
+    datehandler.today();
   },
   today: function() {
-    effectcash.date = moment();
-    effectcash.update_title();
-    effectcash.load_budgets();
+    datehandler.date = moment();
+    datehandler.update_title();
+    budget_list.load(datehandler.list_params());
   },
   next: function() {
-    effectcash.date = moment(effectcash.date).add(1, 'M');
-    effectcash.update_title();
-    effectcash.load_budgets();
+    datehandler.date = moment(datehandler.date).add(1, 'M');
+    datehandler.update_title();
+    budget_list.load(datehandler.list_params());
   },
   prev: function() {
-    effectcash.date = moment(effectcash.date).subtract(1, 'M');
-    effectcash.update_title();
-    effectcash.load_budgets();
+    datehandler.date = moment(datehandler.date).subtract(1, 'M');
+    datehandler.update_title();
+    budget_list.load(datehandler.list_params());
   },
   update_title: function() {
-    var weekday = t('effectcash', effectcash.date.format("MMMM"));
-    var year = effectcash.date.format("YYYY");
+    var weekday = t('effectcash', datehandler.date.format("MMMM"));
+    var year = datehandler.date.format("YYYY");
     $('#effectcash-date').html(weekday + ' ' + year);
   },
-  load_budgets: function() {
-    var start = effectcash.date.startOf('month').format('YYYY-MM-DD');
-    var end = effectcash.date.endOf('month').format('YYYY-MM-DD');
-
-    $.get(OC.generateUrl('apps/effectcash/budgets_load'), { start:start, end:end }, function(budgets) {
-      list.render('#overview-list', budgets);
-    });
-  }
-}
-
-var list = {
-  init: function(list_id) {
-    $(list_id).on('click', '.row', function() {
-      BudgetEdit($(this).attr('budget-id'));
-    });
-  },
-  render: function(list_id, budgets) {
-    var html = '';
-
-    for(i=0; i<budgets.length; i++) {
-      var budget = budgets[i];
-      var date = BudgetDateFormat(budget.date);
-      html += '<div class="row" budget-id="' + budget.id + '"><div><div class="l">' + budget.group_title.charAt(0) + '</div></div><div><div class="t">' + budget.title + '</div><div class="c">' + budget.group_title + '</div><div class="d">' + date + '</div></div><div class="' + (budget.is_income === '1' ? 'i' : 'o')  + '">' + budget.amount + ' €</div></div>';
+  list_params: function() {
+    return {
+      start: datehandler.date.startOf('month').format('YYYY-MM-DD'),
+      end: datehandler.date.endOf('month').format('YYYY-MM-DD')
     }
-
-    $(list_id).html(html);
   }
-}
+};
+
+// #################################
+// Search
+// #################################
 
 var search = {
   timeout: null,
@@ -120,87 +222,76 @@ var search = {
     $('#app-content-main').hide();
     $('#app-content-search').show().css('opacity', '0.5');
     search.timeout = setTimeout(function() {
-      $.get(OC.generateUrl('apps/effectcash/search'), { search:value }, function(budgets) {
-        list.render('#search-list', budgets);
-        $('#app-content-search').css('opacity', '1');
-      });
+      budget_search_list.load({ title:value })
     }, 500);
     return true;
   }
 }
 
-var settings = {
-  save: function() {
-    var data = $('#effectcash-settings-form :input').serialize();
+// #################################
+// Settings
+// #################################
 
-    $.ajax({
-      type: "POST",
-      url: OC.generateUrl('apps/effectcash/settings_save'),
-      data: data,
-      success: function() {
-        location.reload();
-      }
-    });
-  }
+	var settings = {
+		_settings: null,
+		is_init: false,
+		input_id: '#effectcash-settings',
+		init: function(force) {
+			if (!settings.is_init || force) {
+				settings._settings = JSON.parse($(settings.input_id).val());
+				settings.is_init = true;
+			}
+		},
+		getValue: function(key) {
+			settings.init(false);
+			return settings._settings.settings[key];
+		},
+		getOptions: function(key) {
+			settings.init(false);
+			return settings.getOptionsByKey(key, settings.getValue(key));
+		},
+		getOptionsByKey: function(key, default_key) {
+			return settings._settings.settings_defaults[key][default_key];
+		},
+		setValue: function(key, value) {
+			settings.init(false);
+			// SET NEW VALUE & SET JSON
+			settings._settings.settings[key] = value;
+			$(settings.input_id).val(JSON.stringify(settings._settings));
+			// DO AJAX REQUEST
+			$.ajax({
+				type: "PUT",
+				url: OC.generateUrl('apps/effectcash/settings/set_settings'),
+				data: { 'settings': settings._settings.settings },
+				success: function() {
+					location.reload();
+				}
+			});
+		},
+		getAllOptions: function(key) {
+			return settings._settings.settings_defaults[key];
+		}
+	};
+
+// #################################
+// SettingsForm
+// #################################
+
+function setSettingsToForm() {
+	var setting_keys = Object.keys(settings._settings.settings_defaults);
+	for(ski=0; ski<setting_keys.length; ski++) {
+		var setting_key = setting_keys[ski];
+		var setting_defaults = settings.getAllOptions(setting_key);
+		var setting_default_keys = Object.keys(setting_defaults);
+
+		var options = '';
+		for(sdki=0; sdki<setting_default_keys.length; sdki++) {
+			var key = setting_default_keys[sdki];
+			options += '<option value="' + key + '" ' + (key === settings.getValue(setting_key) ? 'selected="selected"' : '') + '>' + setting_defaults[key].preview + '</option>';
+		}
+
+		$('#effectcash-settings-form [name="' + setting_key + '"]').html(options).on('change', function() {
+			settings.setValue($(this).attr('name'), $(this).val());
+		});
+	}
 }
-
-
-
-
-$('#effectcash-new').on('click', function() {
-  BudgetNew();
-});
-$('#effectcash-prev').on('click', function() {
-  effectcash.prev();
-});
-$('#effectcash-next').on('click', function() {
-  effectcash.next();
-});
-$('#effectcash-today').on('click', function() {
-  effectcash.today();
-});
-$('#effectcash-bttn-submit').on('click', function() {
-  FormSubmit();
-});
-$('#effectcash-bttn-cancel').on('click', function() {
-  $('#app-navigation-right').hide();
-});
-
-var dateformat = $('#app-settings-dateformat-datepicker').val();
-$(".datepicker").datepicker({
-  dateFormat: dateformat,
-  changeMonth: true,
-  changeYear: true,
-  minDate: '-20y'
-});
-
-$('#effectcash-input-search').on('keyup', function() {
-  search.find($(this).val());
-});
-
-var _groups;
-
-$.get(OC.generateUrl('apps/effectcash/groups_load'), function(groups) {
-  _groups = groups;
-  var opts = ['<option></option>'];
-  for(i=0; i<groups.length; i++) {
-    opts.push('<option>' + groups[i] + '</option>');
-  }
-
-  $('#effectcash-form [name="group_title"]')
-  .html(opts)
-  .selectize({
-    create: true,
-    sortField: 'text'
-  });
-});
-
-$('#effectcash-settings-bttn-submit').on('click', function() {
-  settings.save();
-});
-
-
-
-effectcash.init();
-list.init('#overview-list');
-list.init('#search-list');
