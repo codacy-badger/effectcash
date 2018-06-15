@@ -3,4 +3,4 @@
   <div></div>
   <div></div>
 </div>
-<div id="search-list" class="list"></div>
+<div id="budget-search-list"></div>

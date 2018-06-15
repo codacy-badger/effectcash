@@ -6,15 +6,15 @@
   use OCP\IConfig;
 
   class ConfigService {
-  	private $appDefaults = [
-  	];
-    private $userDefaults = [
-      'dateformat' => 'dd.mm.yyyy'
-    ];
 
-  	private $appName;
+    private $appName;
   	private $config;
     private $userId;
+
+    private $defaults = [
+      'dateformat' => 'dd.mm.yyyy',
+      'currency' => 'euro'
+    ];
 
   	public function __construct($appName, IConfig $config, $userId) {
   		$this->appName = $appName;
@@ -22,64 +22,52 @@
   		$this->userId = $userId;
   	}
 
-    public function userSettings() {
+    /**
+  	 * @return array
+  	 */
+    public function getSettingsContainer() {
       return [
-        'dateformats' => [
-          'dd.mm.yyyy' => ['datepicker' => 'dd.mm.yy', 'php' => 'd.m.Y', 'moment' => 'DD.MM.YYYY'],
-          'dd/mm/yyyy' => ['datepicker' => 'dd/mm/yy', 'php' => 'd/m/Y', 'moment' => 'DD/MM/YYYY'],
-          'mm/dd/yyyy' => ['datepicker' => 'mm/dd/yy', 'php' => 'm/d/Y', 'moment' => 'MM/DD/YYYY'],
-          'yyyy-mm-dd' => ['datepicker' => 'yy-mm-dd', 'php' => 'Y-m-d', 'moment' => 'YYYY-MM-DD'],
-          'yyyy/mm/dd' => ['datepicker' => 'yy/mm/dd', 'php' => 'Y/m/d', 'moment' => 'YYYY/MM/DD']
+        'settings' => [
+          'dateformat' => $this->getValue('dateformat'),
+          'currency' => $this->getValue('currency')
         ],
-        'dateformat' => $this->getUserValue('dateformat')
+        'settings_defaults' => [
+          'dateformat' => [
+            'dd.mm.yyyy' => ['preview' => date('d.m.Y'), 'datepicker' => 'dd.mm.yy', 'php' => 'd.m.Y', 'moment' => 'DD.MM.YYYY'],
+            'dd/mm/yyyy' => ['preview' => date('d/m/Y'), 'datepicker' => 'dd/mm/yy', 'php' => 'd/m/Y', 'moment' => 'DD/MM/YYYY'],
+            'mm/dd/yyyy' => ['preview' => date('m/d/Y'), 'datepicker' => 'mm/dd/yy', 'php' => 'm/d/Y', 'moment' => 'MM/DD/YYYY'],
+            'yyyy/mm/dd' => ['preview' => date('Y/m/d'), 'datepicker' => 'yy/mm/dd', 'php' => 'Y/m/d', 'moment' => 'YYYY/MM/DD'],
+            'yyyy-mm-dd' => ['preview' => date('Y-m-d'), 'datepicker' => 'yy-mm-dd', 'php' => 'Y-m-d', 'moment' => 'YYYY-MM-DD']
+          ],
+          'currency' => [
+            'euro' => ['preview' => '1.234,50 €', 'places' => 2, 'symbol' => '€', 'symbol_ahead' => false, 'thousand' => '.', 'decimal' => ','],
+            'us-dollar' => ['preview' => '1,234.50 $', 'places' => 2, 'symbol' => '$', 'symbol_ahead' => false, 'thousand' => ',', 'decimal' => '.']
+          ]
+        ]
       ];
     }
 
-    public function getDateformatPHP() {
-      return $this->userSettings()['dateformats'][$this->getUserValue('dateformat')]['php'];
+    /**
+  	 * @param array $settings
+  	 *
+  	 * @return null
+  	 */
+    public function setSettings($settings) {
+      foreach($settings as $key => $value) {
+        $this->setValue($key, $value);
+      }
+      return null;
     }
 
   	/**
   	 * @param string $key
   	 *
   	 * @return string
-     */
-  	public function getAppValue($key) {
-  		$defaultValue = null;
-  		if (array_key_exists($key, $this->appDefaults)) {
-  			$defaultValue = $this->appDefaults[$key];
-  		}
-  		return $this->config->getAppValue($this->appName, $key, $defaultValue);
-  	}
-
-  	/**
-  	 * @param string $key
-  	 * @param string $value
-  	 *
-  	 * @return string
   	 */
-  	public function setAppValue($key, $value) {
-  		return $this->config->setAppValue($this->appName, $key, $value);
-  	}
-
-  	/**
-  	 * @param string $key
-  	 *
-  	 * @return string
-  	 */
-  	public function deleteAppValue($key) {
-  		return $this->config->deleteAppValue($this->appName, $key);
-  	}
-
-  	/**
-  	 * @param string $key
-  	 *
-  	 * @return string
-  	 */
-  	public function getUserValue($key) {
+  	public function getValue($key) {
       $defaultValue = null;
-      if (array_key_exists($key, $this->userDefaults)) {
-        $defaultValue = $this->userDefaults[$key];
+      if (array_key_exists($key, $this->defaults)) {
+        $defaultValue = $this->defaults[$key];
       }
   		return $this->config->getUserValue($this->userId, $this->appName, $key, $defaultValue);
   	}
@@ -90,41 +78,8 @@
   	 *
   	 * @return string
   	 */
-  	public function setUserValue($key, $value) {
-  		return $this->config->setUserValue($this->userId, $this->appName, $key, $value);
+  	public function setValue($key, $value) {
+      return $this->config->setUserValue($this->userId, $this->appName, $key, $value);
   	}
 
-  	/**
-  	 * @param string $userId
-  	 * @param string $key
-  	 *
-  	 * @return string
-  	 */
-  	public function getValueForUser($userId, $key) {
-  		return $this->config->getUserValue($userId, $this->appName, $key);
-  	}
-
-  	/**
-  	 * @param string $userId
-  	 * @param string $key
-  	 * @param string $value
-  	 *
-  	 * @return string
-  	 */
-  	public function setValueForUser($userId, $key, $value) {
-  		return $this->config->setUserValue($userId, $this->appName, $key, $value);
-  	}
-
-  	/**
-  	 * @param boolean $complete
-  	 *
-  	 * @return string|integer
-  	 */
-  	public function getCloudVersion($complete = false) {
-  		$ver = \OCP\Util::getVersion();
-  		if ($complete) {
-  			return implode('.', $ver);
-  		}
-  		return $ver[0];
-  	}
   }

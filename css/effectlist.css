@@ -1,0 +1,26 @@
+.efli-list {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.efli-list .efli-row {
+  display: table-row;
+  transition: background-color .1s ease;
+}
+
+.efli-list .efli-row .efli-cell {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* Default theme */
+.efli-list .efli-row:nth-child(even) {
+	background-color: #eee;
+}
+.efli-list .efli-row:hover {
+	background-color: #ddd;
+}
+.efli-list .efli-row .efli-cell {
+  padding: 5px 10px;
+}

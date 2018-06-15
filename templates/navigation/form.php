@@ -1,7 +1,6 @@
-<div id="effectcash-form">
-  <input type="hidden" name="id">
+<div id="budgetFrm" class="input-frm">
   <label><?php p($l->t('Title')); ?></label>
-  <input type="text" name="title">
+  <input ype="text" name="title" ec-required="ec-required">
   <label><?php p($l->t('Group')); ?></label>
   <select name="group_title"></select>
   <label><?php p($l->t('Repeat')); ?></label>
@@ -20,7 +19,8 @@
     <option value="1"><?php p($l->t('Revenue')); ?></option>
   </select>
   <label><?php p($l->t('Date')); ?></label>
-  <input type="text" name="date" class="datepicker">
+  <input type="text" id="budget-form-budget-date-preview" class="datepicker">
+  <input type="hidden" name="budget_date">
   <label><?php p($l->t('Amount')); ?></label>
   <input type="text" name="amount">
   <label><?php p($l->t('Notice')); ?></label>
