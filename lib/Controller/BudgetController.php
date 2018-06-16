@@ -31,42 +31,43 @@ class BudgetController extends Controller {
   /**
 	* @NoAdminRequired
 	* @NoCSRFRequired
-  * @return array
+  * @return JsonResponse
 	*/
   public function index() {
-  	return $this->budgetMapper->findAll($this->userId);
+  	return new JsonResponse($this->budgetMapper->findAll($this->userId));
   }
 
   /**
 	* @NoAdminRequired
 	* @NoCSRFRequired
   * @param integer $id
-  * @return \OCP\AppFramework\Db\Entity
+  * @return DataResponse
 	*/
   public function read($id) {
-    return $this->budgetMapper->find($id, $this->userId);
+    return new DataResponse($this->budgetMapper->find($id, $this->userId));
   }
 
 	/**
 	* @NoAdminRequired
 	* @NoCSRFRequired
-  * @return \OCP\AppFramework\Db\Entity
+  * @return DataResponse
 	*/
   public function new() {
-    return new Budget();
+		$budget = new Budget();
+    return new DataResponse($budget);
   }
 
   /**
   * @NoAdminRequired
   * @NoCSRFRequired
   * @param string $title
-  * @return array
+  * @return JsonResponse
   */
   public function search($title) {
     if($title === null) {
-      return [];
+      return JsonResponse([]);
     }
-    return $this->budgetMapper->findAllByTitle($this->userId, $title);
+    return new JsonResponse($this->budgetMapper->findAllByTitle($this->userId, $title));
   }
 
   /**
@@ -74,12 +75,12 @@ class BudgetController extends Controller {
   * @NoCSRFRequired
   * @param string $start
   * @param string $end
-  * @return array
+  * @return JsonResponse
   */
   public function between($start, $end) {
     $budgets = $this->budgetMapper->findBetween($this->userId, $start, $end);
-    $budgets = $this->rrule($budgets, $start, $end);
-    return $budgets;
+		$budgets = $this->rrule($budgets, $start, $end);
+    return new JsonResponse($budgets);
   }
 
   /**
@@ -89,23 +90,22 @@ class BudgetController extends Controller {
   * @param string $group_title
   * @param string $repeat
   * @param boolean $is_income
-  * @param string $budget_date
+  * @param string $date
   * @param string $amount
   * @param string $description
-  * @return \OCP\AppFramework\Db\Entity
+  * @return DataResponse
 	*/
-  public function create($title, $group_title, $repeat, $is_income, $budget_date, $amount, $description) {
+  public function create($title, $group_title, $repeat, $is_income, $date, $amount, $description) {
     $budget = new Budget();
     $budget->setUserId($this->userId);
 		$budget->setTitle($title);
 		$budget->setGroupTitle($group_title);
 		$budget->setRepeat($repeat);
 		$budget->setIsIncome($is_income);
-		$budget->setBudgetDate($budget_date);
+		$budget->setDate($date);
 		$budget->setAmount($amount);
 		$budget->setDescription($description);
-
-    return $this->budgetMapper->insert($budget);
+    return new DataResponse($this->budgetMapper->insert($budget));
   }
 
   /**
@@ -116,34 +116,32 @@ class BudgetController extends Controller {
   * @param string $group_title
   * @param string $repeat
   * @param boolean $is_income
-  * @param string $budget_date
+  * @param string $date
   * @param string $amount
   * @param string $description
-  * @return \OCP\AppFramework\Db\Entity
+  * @return DataResponse
 	*/
-  public function update($id, $title, $group_title, $repeat, $is_income, $budget_date, $amount, $description) {
+  public function update($id, $title, $group_title, $repeat, $is_income, $date, $amount, $description) {
     $budget = $this->budgetMapper->find($id, $this->userId);
-    $budget->setUserId($this->userId);
     $budget->setTitle($title);
     $budget->setGroupTitle($group_title);
     $budget->setRepeat($repeat);
     $budget->setIsIncome($is_income);
-    $budget->setBudgetDate($budget_date);
+    $budget->setDate($date);
     $budget->setAmount($amount);
     $budget->setDescription($description);
-
-    return $this->budgetMapper->update($budget);
+	  return new DataResponse($this->budgetMapper->update($budget));
   }
 
   /**
   * @NoAdminRequired
   * @NoCSRFRequired
   * @param integer $id
-  * @return \OCP\AppFramework\Db\Entity
+  * @return DataResponse
   */
   public function delete($id) {
     $budget = $this->budgetMapper->find($id, $this->userId);
-    return $budget;
+    return new DataResponse($this->budgetMapper->delete($budget));
   }
 
   /* private */
@@ -152,14 +150,19 @@ class BudgetController extends Controller {
 	* @param array $budgets
 	* @param string $start
 	* @param string $end
+	* @return array
 	*/
   private function rrule($budgets, $start, $end) {
     $new_budgets = [];
 
-    foreach($budgets as &$budget) {
+    foreach($budgets as $budget) {
       $repeat = $budget->getRepeat();
-      $repeat_type = substr($repeat, 0, 1);
-      $repeat_len = substr($repeat, 1, 1);
+			$repeat_type = null;
+
+			if(strlen($repeat) !== 2) {
+      	$repeat_type = substr($repeat, 0, 1);
+      	$repeat_len = substr($repeat, 1, 1);
+			}
 
       switch ($repeat_type) {
         case 'w':
@@ -191,7 +194,6 @@ class BudgetController extends Controller {
         ]), $budget));
         break;
         default:
-          $budget->setBudgetDate($budget->getDateAsFormat('Y-m-d'));
           $new_budgets[] = $budget;
           break;
       }
@@ -203,7 +205,7 @@ class BudgetController extends Controller {
     $new_budgets = [];
     foreach ($rrule as $occurrence) {
       $new_budget = clone $budget;
-      $new_budget->setBudgetDate($occurrence->format('Y-m-d'));
+      $new_budget->setDate($occurrence->format('Y-m-d'));
       $new_budgets[] = $new_budget;
     }
     return $new_budgets;

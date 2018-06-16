@@ -20,7 +20,7 @@
   </select>
   <label><?php p($l->t('Date')); ?></label>
   <input type="text" id="budget-form-budget-date-preview" class="datepicker">
-  <input type="hidden" name="budget_date">
+  <input type="hidden" name="date">
   <label><?php p($l->t('Amount')); ?></label>
   <input type="text" name="amount">
   <label><?php p($l->t('Notice')); ?></label>

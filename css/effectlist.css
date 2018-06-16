@@ -15,7 +15,7 @@
 }
 
 /* Default theme */
-.efli-list .efli-row:nth-child(even) {
+.efli-list .efli-row:nth-child(odd) {
 	background-color: #eee;
 }
 .efli-list .efli-row:hover {

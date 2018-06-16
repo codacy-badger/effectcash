@@ -1,13 +1,17 @@
 <?php
-script('effectcash', 'effectlist');
-script('effectcash', 'Chart.bundle.min');
-script('effectcash', 'Chart.min');
-script('effectcash', 'selectize.min');
-script('effectcash', 'script');
-script('effectcash', 'start');
-style('effectcash', 'effectlist');
-style('effectcash', 'selectize');
-style('effectcash', 'style');
+script('effectcash', array(
+	'Chart.bundle.min',
+	'Chart.min',
+	'selectize.min',
+	'effectlist',
+	'script',
+	'start'
+));
+style('effectcash', array(
+	'selectize',
+	'effectlist',
+	'style'
+));
 ?>
 
 <div id="app">
@@ -15,18 +19,15 @@ style('effectcash', 'style');
 		<?php print_unescaped($this->inc('navigation/index')); ?>
 		<?php print_unescaped($this->inc('settings/index')); ?>
 	</div>
-	<div id="app-navigation-right">
-		<?php print_unescaped($this->inc('navigation/form')); ?>
-	</div>
-
 	<div id="app-content">
-		<div id="app-content-wrapper">
-			<div id="app-content-main">
-				<?php print_unescaped($this->inc('content/index')); ?>
-			</div>
-			<div id="app-content-search">
-				<?php print_unescaped($this->inc('content/search')); ?>
-			</div>
+		<div id="app-navigation-right">
+			<?php print_unescaped($this->inc('navigation/form')); ?>
+		</div>
+		<div id="app-content-main">
+			<?php print_unescaped($this->inc('content/index')); ?>
+		</div>
+		<div id="app-content-search">
+			<?php print_unescaped($this->inc('content/search')); ?>
 		</div>
 	</div>
 </div>

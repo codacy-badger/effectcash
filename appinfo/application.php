@@ -1,7 +1,6 @@
 <?php
 namespace OCA\EffectCash\AppInfo;
 
-
 use OC\AppFramework\Utility\SimpleContainer;
 use \OCP\AppFramework\App;
 use \OCA\EffectCash\Db\BudgetMapper;
@@ -10,7 +9,6 @@ use \OCA\EffectCash\Controller\BudgetController;
 use \OCA\EffectCash\Service\ConfigService;
 
 class Application extends App {
-
 
 	public function __construct (array $urlParams=array()) {
 		parent::__construct('effectcash', $urlParams);

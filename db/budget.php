@@ -22,13 +22,23 @@ class Budget extends Entity implements JsonSerializable {
 
         /* Defaults */
         $this->setIsIncome(0);
-        $this->setBudgetDate(date('Y-m-d'));
+        $this->setDate(date('Y-m-d'));
     }
 
     public function getDateAsFormat($format) {
-      $phpdate = strtotime($this->budgetDate);
-      return date($format, $phpdate);
+      $datetime = date_create_from_format('Y-m-d H:i:s', $this->getBudgetDate());
+      return date_format($datetime, $format);
     }
+
+		public function getDate() {
+			$datetime = date_create_from_format('Y-m-d H:i:s', $this->getBudgetDate());
+			return date_format($datetime, 'Y-m-d');
+		}
+
+		public function setDate($date) {
+			$datetime = date_create_from_format('Y-m-d', $date);
+			$this->setBudgetDate(date_format($datetime, 'Y-m-d H:i:s'));
+		}
 
     public function jsonSerialize() {
         return [
@@ -37,7 +47,7 @@ class Budget extends Entity implements JsonSerializable {
             'group_title' => $this->groupTitle,
             'repeat' => $this->repeat,
             'is_income' => $this->isIncome,
-            'budget_date' => $this->getDateAsFormat('Y-m-d'),
+            'date' => $this->getDate(),
             'amount' => $this->amount,
             'description' => $this->description
         ];

@@ -5,7 +5,7 @@
     <name>EffectCash</name>
     <summary>PLACEHOLDER</summary>
     <description><![CDATA[PLACEHOLDER]]></description>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <licence>agpl</licence>
     <author mail="vogt.joo@googlemail.com" >Johannes Vogt</author>
     <namespace>EffectCash</namespace>
@@ -18,7 +18,7 @@
 
     <navigations>
         <navigation>
-            <name>Effect Cash</name>
+            <name>EffectCash</name>
             <route>effectcash.page.index</route>
         </navigation>
     </navigations>

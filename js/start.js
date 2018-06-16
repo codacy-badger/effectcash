@@ -17,7 +17,7 @@ $(".datepicker").datepicker({
   changeMonth: true,
   changeYear: true,
   minDate: '-20y',
-  altField: '[name="budget_date"]',
+  altField: '[name="date"]',
   altFormat: 'yy-mm-dd'
 });
 

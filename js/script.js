@@ -19,11 +19,15 @@ Number.prototype.formatMoney = function(places, symbol, symbol_ahead, thousand, 
 // #################################
 
 function BudgetGroupTitleFormatter(value, row) {
-  return `<div class="group-char">` + value.charAt(0) + `</div>`;
+	var chr = value.charAt(0);
+	if(chr.length === 0) {
+		chr = row.title.charAt(0);
+	}
+  return `<div class="group-char">` + chr + `</div>`;
 }
 
 function BudgetTitleFormatter(value, row) {
-  var date_formated = moment(row.budget_date).format(settings.getOptions('dateformat').moment);
+  var date_formated = moment(row.date).format(settings.getOptions('dateformat').moment);
   return `
     <div>` + row.title + `</div>
     <div>` + row.group_title + `</div>
@@ -45,7 +49,7 @@ function BudgetAmountFormatter(value, row) {
 
 var budget_list = $('#budget-list').effectlist({
   url: OC.generateUrl('apps/effectcash/budgets/between'),
-	sortBy: 'budget_date',
+	sortBy: 'date',
   cells: [
     { key:'group_title', cls:'group-title', formatter:BudgetGroupTitleFormatter },
     { key:'title', cls:'title', formatter:BudgetTitleFormatter },
@@ -76,7 +80,7 @@ var budget_list = $('#budget-list').effectlist({
 
 var budget_search_list = $('#budget-search-list').effectlist({
   url: OC.generateUrl('apps/effectcash/budgets/search'),
-	sortBy: 'budget_date',
+	sortBy: 'date',
   cells: [
     { key:'group_title', cls:'group-title', formatter:BudgetGroupTitleFormatter },
     { key:'title', cls:'title', formatter:BudgetTitleFormatter },
@@ -108,7 +112,7 @@ var budget = {
   form_render: function(bget, is_new) {
     var form = $('#budgetFrm');
 
-    var budget_date_preview = moment(bget.budget_date).format(settings.getOptions('dateformat').moment);
+    var date_preview = moment(bget.date).format(settings.getOptions('dateformat').moment);
 
     // Insert to fields
     form.find("[name='title']").val(bget.title);
@@ -116,8 +120,8 @@ var budget = {
     form.find("[name='group_title']")[0].selectize.setValue(bget.group_title);
     form.find("[name='repeat']").val(bget.repeat);
     form.find("[name='is_income']").val(bget.is_income);
-    form.find('#budget-form-budget-date-preview').val(budget_date_preview);
-    form.find("[name='budget_date']").val(bget.budget_date);
+    form.find('#budget-form-budget-date-preview').val(date_preview);
+    form.find("[name='date']").val(bget.date);
     form.find("[name='amount']").val(bget.amount);
     form.find("[name='description']").val(bget.description);
 
@@ -131,9 +135,11 @@ var budget = {
     });
     $('#effectcash-bttn-cancel').off('click').on('click', function() {
       $('#app-navigation-right').hide();
+			$('#app-content').removeClass('sidebar-visible');
     });
     // Show form and select first field
     $('#app-navigation-right').show();
+		$('#app-content').addClass('sidebar-visible');
     form.find("[name='title']").focus();
   },
   create: function() {
@@ -143,6 +149,7 @@ var budget = {
       data: $('#budgetFrm :input').serialize(),
       success: function() {
         $('#app-navigation-right').hide();
+				$('#app-content').removeClass('sidebar-visible');
         budget_list.load(datehandler.list_params());
       }
     });
@@ -154,6 +161,7 @@ var budget = {
       data: $('#budgetFrm :input').serialize(),
       success: function() {
         $('#app-navigation-right').hide();
+				$('#app-content').removeClass('sidebar-visible');
         budget_list.load(datehandler.list_params());
       }
     });

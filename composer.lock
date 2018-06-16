@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c13be10e65ec517b779f93765941c286",
-    "content-hash": "6a5a4ac81b2e4798ca2b991809314738",
+    "hash": "78c9ca76b31a915df3a9ae81a1958682",
+    "content-hash": "1695ac56c6b2cca395f455fe1b8328f9",
     "packages": [
         {
             "name": "rlanvin/php-rrule",

@@ -9,6 +9,10 @@
 
 /* List */
 
+.efli-list .efli-row .efli-cell {
+	padding: 5px 0;
+}
+
 .efli-list .efli-row .efli-cell.group-title {
 	width: 80px;
 	text-align: center;
@@ -27,7 +31,7 @@
 }
 
 .efli-list .efli-row .efli-cell.title div:nth-child(1) {
-	font-size: 18px;
+	font-size: 19px;
 	color: #333;
 }
 
@@ -40,7 +44,7 @@
 .efli-list .efli-row .efli-cell.amount {
 	text-align: right;
 	width: 160px;
-	padding-right: 30px;
+	padding-right: 20px;
 	font-size: 17px;
 }
 
@@ -55,37 +59,49 @@
 }
 
 .list-header {
-	display: table;
-	table-layout: fixed;
-	width: 100%;
-	background-color: #eee;
+	box-sizing: border-box;
+	position: -webkit-sticky;
+	position: sticky;
+	height: 44px;
+	padding: 0;
+	padding: 0 20px;
+	margin: 0;
+	z-index: 60;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	display: flex;
+	top: 0;
+	background-color: rgba(255, 255, 255, 0.95);
 }
 
 .list-header > div {
-	padding: 16px 0;
 	vertical-align: middle;
+	height: 44px;
+	line-height: 44px;
 }
 
 .list-header > div:nth-child(1) {
-	padding-left: 20px;
 	font-size: 20px;
+	display: inline-flex;
 }
 
 .list-header > div:nth-child(2) {
-	text-align: right;
-	font-size: 15px;
-	color: #666;
+	display: flex;
+	flex: 1 1;
 }
 
 .list-header > div:nth-child(3) {
-	text-align: right;
-	padding-right: 30px;
-	font-size: 17px;
-	width: 160px;
+	font-size: 15px;
+	color: #666;
+	padding-right: 14px;
+	display: inline-flex;
 }
 
-.list-header > div {
-	display: table-cell;
+.list-header > div:nth-child(4) {
+	font-size: 17px;
+	display: inline-flex;
 }
 
 /* Navigation */
@@ -126,21 +142,28 @@
 
 /* Navigation right */
 #app-navigation-right {
-	display: none;
+	position: fixed;
+	top: 45px;
+	right: 0;
+	left: auto;
+	bottom: 0;
+	width: 308px;
+	display: block;
+	background: #fff;
+	border-left: 1px solid #ebebeb;
+	-webkit-transition: margin-right 300ms;
+	transition: margin-right 300ms;
+	overflow-x: hidden;
 	overflow-y: auto;
-  width: 250px;
-  height: 100%;
-  float: right;
-  box-sizing: border-box;
-  background-color: #fff;
-  padding-bottom: 44px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  border-left: 1px solid #ebebeb;
-  flex-direction: column;
-	padding: 0 5px;
+	visibility: visible;
+	z-index: 500;
+	display: none;
+	padding: 0 6px;
+}
+
+#app-content.sidebar-visible,
+#app-content.sidebar-visible {
+	margin-right: 308px;
 }
 
 /* Search */
@@ -178,4 +201,17 @@
 }
 .glyphicon-chevron-right {
     background: url('../img/rightarrow.svg') center center no-repeat;
+}
+
+@media only screen and (max-width: 768px) {
+	.list-header {
+		padding:0 5px;
+		padding-left: 44px;
+	}
+	.efli-list .efli-row .efli-cell.amount {
+		padding-right: 5px;
+	}
+	.efli-list .efli-row .efli-cell.group-title {
+	    width: 60px;
+	}
 }
